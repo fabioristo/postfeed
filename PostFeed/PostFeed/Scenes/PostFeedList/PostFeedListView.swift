@@ -9,23 +9,23 @@ import SwiftUI
 
 struct PostFeedListView: View {
     @State private var path: [PostModel] = []
-    private var posts: [PostModel] = [PostModel(name: "First Post", text: "")]
+    @StateObject private var store = PostFeedStore()
     
     var body: some View {
         NavigationStack(path: $path) {
             List {
-                ForEach(posts) { item in
+                ForEach(store.posts) { post in
                     ZStack {
-                        NavigationLink(value: item) {
+                        NavigationLink(value: post) {
                             EmptyView()
                         }
                         .buttonStyle(PlainButtonStyle())
                         .opacity(0) // For hiding the right arrow
                         
-                        VStack(spacing: 0) {
-                            Text("VStack")
-                            Text(item.name)
+                        VStack(alignment: .leading, spacing: 0) {
+                            Text(post.user.name)
                         }
+                        .frame(maxWidth: .infinity, alignment: .leading)
                     }
                 }
             }
@@ -34,6 +34,17 @@ struct PostFeedListView: View {
             .navigationDestination(for: PostModel.self) { model in
                 PostFeedView(model: model)
             }
+        }
+        .task {
+            await getPosts()
+        }
+    }
+    
+    private func getPosts() async {
+        do {
+            try await store.fetchPosts()
+        } catch {
+            print(error.localizedDescription)
         }
     }
 }
