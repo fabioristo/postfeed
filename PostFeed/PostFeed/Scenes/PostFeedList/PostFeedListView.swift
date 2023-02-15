@@ -13,20 +13,28 @@ struct PostFeedListView: View {
     
     var body: some View {
         NavigationStack(path: $path) {
-            List {
-                ForEach(store.posts) { post in
-                    ZStack {
-                        NavigationLink(value: post) {
-                            EmptyView()
-                        }
-                        .buttonStyle(PlainButtonStyle())
-                        .opacity(0) // For hiding the right arrow
-                        
-                        VStack(alignment: .leading, spacing: 0) {
-                            Text(post.user.name)
-                        }
-                        .frame(maxWidth: .infinity, alignment: .leading)
+            List(store.posts) { post in
+                ZStack {
+                    NavigationLink(value: post) {
+                        EmptyView()
                     }
+                    .buttonStyle(PlainButtonStyle())
+                    .opacity(0) // For hiding the right arrow
+                    
+                    VStack(alignment: .leading, spacing: 0) {
+                        Text(post.user.name)
+                        AsyncImage(url: post.mediaItems.first?.thumbnailPath) { image in
+                            image
+                                .resizable()
+                                .scaledToFit()
+                                .clipShape(RoundedRectangle(cornerRadius: 16))
+                        } placeholder: {
+                            ProgressView()
+                        }
+                        .frame(width: 100, height: 100)
+                        .clipShape(RoundedRectangle(cornerRadius: 16))
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)                    
                 }
             }
             .navigationTitle("PostFeed")

@@ -15,6 +15,7 @@ struct PostModel: Hashable, Identifiable, Codable {
     let date: String
     let user: User
     let reactions: Reactions
+    let mediaItems: [MediaItem]
 }
 
 // MARK: - PostType
@@ -38,23 +39,23 @@ struct Reactions: Hashable, Codable {
 }
 
 // MARK: - MediaItem
-struct MediaItem: Codable {
+struct MediaItem: Hashable, Codable {
     let type: MediaItemType
     let mediaEndpoint: String
-    let thumbnailPath: String
+    let thumbnailPath: URL
     let size: Size
     let scale: Int
     let aspectRatio: Int
 }
 
 // MARK: - MediaItemType
-enum MediaItemType: String, Codable {
+enum MediaItemType: String, Hashable, Codable {
     case photo = "photo"
     case video = "video"
 }
 
 // MARK: - Size
-struct Size: Codable {
+struct Size: Hashable, Codable {
     let width: Int
     let height: Int
 }

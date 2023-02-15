@@ -31,7 +31,8 @@ struct PostFeedView_Previews: PreviewProvider {
                 reactions: Reactions(
                     totalReactionsCount: 1,
                     likesCount: 5
-                )
+                ),
+                mediaItems: []
             )
         )
     }

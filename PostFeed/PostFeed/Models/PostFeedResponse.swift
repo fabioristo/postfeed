@@ -7,6 +7,7 @@
 
 import Foundation
 
+// MARK: - PostFeedResponse
 struct PostFeedResponse: Codable {
     let pagination: Pagination
     let statusCode: Int
