@@ -23,18 +23,27 @@ struct PostFeedListView: View {
                     
                     VStack(alignment: .leading, spacing: 0) {
                         Text(post.user.name)
-                        AsyncImage(url: post.mediaItems.first?.thumbnailPath) { image in
-                            image
-                                .resizable()
-                                .scaledToFit()
-                                .clipShape(RoundedRectangle(cornerRadius: 16))
-                        } placeholder: {
-                            ProgressView()
-                        }
-                        .frame(width: 100, height: 100)
-                        .clipShape(RoundedRectangle(cornerRadius: 16))
+                        HStack(spacing: 8) {
+                            AsyncImage(url: post.mediaItems.first?.thumbnailPath) { image in
+                                image
+                                    .resizable()
+                                    .scaledToFit()
+                                    .clipShape(RoundedRectangle(cornerRadius: 16))
+                            } placeholder: {
+                                ProgressView()
+                            }
+                            .frame(width: 100, height: 100)
+                            .clipShape(RoundedRectangle(cornerRadius: 16))
+                            
+                            Text(post.caption)
+                        }                        
                     }
-                    .frame(maxWidth: .infinity, alignment: .leading)                    
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .onAppear {
+                        if post.id == (store.posts.last?.id ?? "")  {
+                            Task { await getPosts() }
+                        }
+                    }
                 }
             }
             .navigationTitle("PostFeed")

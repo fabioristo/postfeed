@@ -10,8 +10,10 @@ import Foundation
 @MainActor
 class PostFeedStore: ObservableObject {
     @Published var posts: [PostModel] = []
+    private var allPosts: [PostModel] = []
     
     func fetchPosts() async throws {
-        posts = try await PostFeedService().loadPosts()
+        allPosts = try await PostFeedService().loadPosts()
+        posts += allPosts.filter({ $0.type == .image })
     }
 }

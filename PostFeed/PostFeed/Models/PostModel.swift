@@ -22,6 +22,7 @@ struct PostModel: Hashable, Identifiable, Codable {
 enum PostType: String, Codable {
     case image = "image"
     case video = "video"
+    case multimedia = "multimedia"
 }
 
 // MARK: - User
@@ -42,7 +43,7 @@ struct Reactions: Hashable, Codable {
 struct MediaItem: Hashable, Codable {
     let type: MediaItemType
     let mediaEndpoint: String
-    let thumbnailPath: URL
+    let thumbnailPath: URL?
     let size: Size
     let scale: Int
     let aspectRatio: Int
