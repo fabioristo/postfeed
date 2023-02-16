@@ -16,6 +16,13 @@ struct PostModel: Hashable, Identifiable, Codable {
     let user: User
     let reactions: Reactions
     let mediaItems: [MediaItem]
+    var localizedDate: String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+        guard let formattedDate = dateFormatter.date(from: date) else { return "" }
+        dateFormatter.dateFormat = "dd/MM/yyyy"
+        return dateFormatter.string(from: formattedDate)        
+    }
 }
 
 // MARK: - PostType

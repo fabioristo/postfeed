@@ -14,38 +14,16 @@ struct PostFeedListView: View {
     var body: some View {
         NavigationStack(path: $path) {
             List(store.posts) { post in
-                ZStack {
-                    NavigationLink(value: post) {
-                        EmptyView()
-                    }
-                    .buttonStyle(PlainButtonStyle())
-                    .opacity(0) // For hiding the right arrow
-                    
-                    VStack(alignment: .leading, spacing: 0) {
-                        Text(post.user.name)
-                        HStack(spacing: 8) {
-                            AsyncImage(url: post.mediaItems.first?.thumbnailPath) { image in
-                                image
-                                    .resizable()
-                                    .scaledToFit()
-                                    .clipShape(RoundedRectangle(cornerRadius: 16))
-                            } placeholder: {
-                                ProgressView()
-                            }
-                            .frame(width: 100, height: 100)
-                            .clipShape(RoundedRectangle(cornerRadius: 16))
-                            
-                            Text(post.caption)
-                        }                        
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                CellView(post: post)
+                    .listRowSeparator(.hidden)
+                    .padding(.bottom, 8)
                     .onAppear {
                         if post.id == (store.posts.last?.id ?? "")  {
                             Task { await getPosts() }
                         }
                     }
-                }
             }
+            .listStyle(PlainListStyle())
             .navigationTitle("PostFeed")
             .scrollIndicators(ScrollIndicatorVisibility.never, axes: .vertical)
             .navigationDestination(for: PostModel.self) { model in
@@ -62,6 +40,51 @@ struct PostFeedListView: View {
             try await store.fetchPosts()
         } catch {
             print(error.localizedDescription)
+        }
+    }
+}
+
+private struct CellView: View {
+    let post: PostModel
+    
+    var body: some View {
+        ZStack {
+            NavigationLink(value: post) {
+                EmptyView()
+            }
+            .buttonStyle(PlainButtonStyle())
+            .opacity(0) // For hiding the right arrow
+            
+            HStack(spacing: 8) {
+                AsyncImage(url: post.mediaItems.first?.thumbnailPath) { phase in
+                    switch phase {
+                    case .failure(_): Color.red
+                    case .success(let image):
+                        image
+                            .resizable()
+                            .scaledToFill()
+                    case .empty: Color.gray
+                    default: ProgressView()
+                    }
+                }
+                .frame(width: 100, height: 100)
+                .clipShape(RoundedRectangle(cornerRadius: 16))
+                
+                VStack(alignment: .leading, spacing: 0) {
+                    Text(post.user.name)
+                        .bold()
+                    
+                    Text(post.localizedDate)
+                        .font(Font.system(.footnote))
+                        .padding(.top, 16)
+                    
+                    Text("Likes: \(post.reactions.likesCount)")
+                        .font(Font.system(.footnote))
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(RoundedRectangle(cornerRadius: 16).foregroundColor(.white))
+            .shadow(radius: 8, y: 4)
         }
     }
 }
