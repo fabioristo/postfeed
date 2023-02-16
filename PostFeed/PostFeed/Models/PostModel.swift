@@ -49,7 +49,7 @@ struct Reactions: Hashable, Codable {
 // MARK: - MediaItem
 struct MediaItem: Hashable, Codable {
     let type: MediaItemType
-    let mediaEndpoint: String
+    let mediaEndpoint: URL?
     let thumbnailPath: URL?
     let size: Size
     let scale: Int
