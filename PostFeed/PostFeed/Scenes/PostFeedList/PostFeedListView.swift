@@ -15,8 +15,8 @@ struct PostFeedListView: View {
         NavigationStack(path: $path) {
             if store.state == .error {
                 ErrorView(
-                    localizedError: store.localizedError,
-                    prova: store.fetchPosts
+                    error: store.errorType?.errorDescription ?? "",
+                    onButtonTapped: store.fetchPosts
                 )
                 .navigationTitle("PostFeed")
             } else {
@@ -90,15 +90,15 @@ private struct CellView: View {
 }
 
 private struct ErrorView: View {
-    let localizedError: String
-    let prova: () async -> Void
+    let error: String
+    let onButtonTapped: () async -> Void
     
     var body: some View {
         VStack(spacing: 16) {
-            Text(localizedError)
+            Text(error)
             
             Button {
-                Task { await prova() }
+                Task { await onButtonTapped() }
             } label: {
                 Text("Refresh")
             }

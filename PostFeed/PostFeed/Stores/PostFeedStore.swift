@@ -14,18 +14,6 @@ class PostFeedStore: ObservableObject {
     @Published var state: StoreState = .loading
     private var allPosts: [PostModel] = []
     private var hasNextPage: Bool = true
-    var localizedError: String {
-        switch errorType {
-        case .none:
-            return "Generic Error"
-        case .badUrl:
-            return "Invalid URL"
-        case .responseError:
-            return "Invalid Response"
-        case .unauthorized:
-            return "Unauthorized"
-        }
-    }
     
     func fetchPosts() async {
         guard hasNextPage else { return }
