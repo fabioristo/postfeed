@@ -9,25 +9,22 @@ import SwiftUI
 
 struct PostFeedView: View {
     let model: PostModel
+    
     var body: some View {
-        ScrollView {
-            if model.mediaItems.count > 1 {
-                LazyVGrid(columns: [GridItem(.adaptive(minimum: 170))]) {
-                    ForEach(model.mediaItems, id: \.self) { item in
-                        MediaImage(url: item.mediaEndpoint)
-                    }
-                }
-            } else {
-                VStack(spacing: 0) {
-                    MediaImage(url: model.mediaItems.first?.mediaEndpoint)
-                        .frame(maxWidth: .infinity, maxHeight: 300)
-                    
-                    Text(model.caption)
-                        .padding(.top, 16)
+        ScrollView(.vertical, showsIndicators: false) {
+            Text(model.user.name)
+                .font(.largeTitle)
+                .padding(.bottom, 8)
+            
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 100))], spacing: 8) {
+                ForEach(model.mediaItems, id: \.self) { item in
+                    MediaImage(url: item.mediaEndpoint)
+                        .shadow(radius: 8, y: 4)
                 }
             }
-            
+            .padding(.horizontal, 8)
         }
+        .frame(alignment: .top)
     }
 }
 
@@ -40,12 +37,11 @@ private struct MediaImage: View {
             case .success(let image):
                 image
                     .resizable()
-                    .scaledToFit()
+                    .scaledToFill()
             case .empty: Color.gray
             default: ProgressView()
             }
         }
-        
     }
 }
 
