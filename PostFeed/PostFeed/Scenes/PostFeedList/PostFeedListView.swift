@@ -13,33 +13,33 @@ struct PostFeedListView: View {
     
     var body: some View {
         NavigationStack(path: $path) {
-            List(store.posts) { post in
-                CellView(post: post)
-                    .listRowSeparator(.hidden)
-                    .padding(.bottom, 8)
-                    .onAppear {
-                        if post.id == (store.posts.last?.id ?? "")  {
-                            Task { await getPosts() }
+            if store.state == .error {
+                ErrorView(
+                    localizedError: store.localizedError,
+                    prova: store.fetchPosts
+                )
+                .navigationTitle("PostFeed")
+            } else {
+                List(store.posts) { post in
+                    CellView(post: post)
+                        .listRowSeparator(.hidden)
+                        .padding(.bottom, 8)
+                        .onAppear {
+                            if post.id == (store.posts.last?.id ?? "")  {
+                                Task { await store.fetchPosts() }
+                            }
                         }
-                    }
-            }
-            .listStyle(PlainListStyle())
-            .navigationTitle("PostFeed")
-            .scrollIndicators(ScrollIndicatorVisibility.never, axes: .vertical)
-            .navigationDestination(for: PostModel.self) { model in
-                PostFeedView(model: model)
+                }
+                .listStyle(PlainListStyle())
+                .navigationTitle("PostFeed")
+                .scrollIndicators(ScrollIndicatorVisibility.never, axes: .vertical)
+                .navigationDestination(for: PostModel.self) { model in
+                    PostFeedView(model: model)
+                }
             }
         }
         .task {
-            await getPosts()
-        }
-    }
-    
-    private func getPosts() async {
-        do {
-            try await store.fetchPosts()
-        } catch {
-            print(error.localizedDescription)
+            await store.fetchPosts()
         }
     }
 }
@@ -85,6 +85,23 @@ private struct CellView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(RoundedRectangle(cornerRadius: 16).foregroundColor(.white))
             .shadow(radius: 8, y: 4)
+        }
+    }
+}
+
+private struct ErrorView: View {
+    let localizedError: String
+    let prova: () async -> Void
+    
+    var body: some View {
+        VStack(spacing: 16) {
+            Text(localizedError)
+            
+            Button {
+                Task { await prova() }
+            } label: {
+                Text("Refresh")
+            }
         }
     }
 }
