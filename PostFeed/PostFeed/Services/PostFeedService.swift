@@ -21,6 +21,7 @@ final class PostFeedService {
         request.httpMethod = "GET"
         request.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         let (data, httpResponse) = try await URLSession.shared.data(for: request)
+        try Task.checkCancellation()
         guard let response = httpResponse as? HTTPURLResponse else { throw ErrorType.responseError }
         guard response.statusCode == 200 else {
             switch response.statusCode {

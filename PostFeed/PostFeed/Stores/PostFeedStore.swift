@@ -16,6 +16,7 @@ class PostFeedStore: ObservableObject {
     private var hasNextPage: Bool = true
     
     func fetchPosts() async {
+        errorType = nil
         guard hasNextPage else { return }
         do {
             state = .loading

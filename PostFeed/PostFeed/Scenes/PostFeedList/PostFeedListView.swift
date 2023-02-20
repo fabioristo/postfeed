@@ -15,7 +15,7 @@ struct PostFeedListView: View {
         NavigationStack(path: $path) {
             if store.state == .error {
                 ErrorView(
-                    error: store.errorType?.errorDescription ?? "",
+                    error: store.errorType?.errorDescription ?? "Generic Error",
                     onButtonTapped: store.fetchPosts
                 )
                 .navigationTitle("PostFeed")
