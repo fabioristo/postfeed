@@ -17,7 +17,8 @@ struct PostFeedView: View {
                 .padding(.bottom, 8)
             
             LazyVGrid(columns: [GridItem(.adaptive(minimum: 100))], spacing: 8) {
-                ForEach(model.mediaItems, id: \.self) { item in
+                // model.images shows only photos, model.mediaItems shows videos as well
+                ForEach(model.images, id: \.self) { item in
                     MediaImage(url: item.mediaEndpoint)
                         .shadow(radius: 8, y: 4)
                 }

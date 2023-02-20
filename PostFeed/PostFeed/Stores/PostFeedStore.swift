@@ -23,7 +23,7 @@ class PostFeedStore: ObservableObject {
             let response = try await PostFeedService().loadPosts()
             hasNextPage = response?.pagination.hasNext ?? false
             allPosts = response?.result ?? []
-            posts += allPosts.filter({ $0.type == .image })
+            posts += allPosts.filter({ $0.type == .image || $0.type == .multimedia })
             state = .loaded
         } catch {
             errorType = error as? ErrorType

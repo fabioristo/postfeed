@@ -23,6 +23,9 @@ struct PostModel: Hashable, Identifiable, Codable {
         dateFormatter.dateFormat = "dd/MM/yyyy"
         return dateFormatter.string(from: formattedDate)        
     }
+    var images: [MediaItem] {
+        mediaItems.filter({ $0.type == .photo })
+    }
 }
 
 // MARK: - PostType
